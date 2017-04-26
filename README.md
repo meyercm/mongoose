@@ -16,12 +16,12 @@ retaining the original remote's functionality.
 
 * Physical
   - [x] Identify control traces
-  - [ ] Solder jumpers to power/ground/inputs
+  - [x] Solder jumpers to power/ground/inputs
   - [ ] Mount Camera Module
   - [ ] Add LED headlights
   - [ ] Mount micro
 * ESP8266
-  - [ ] Establish programming environment
+  - [x] Establish programming environment
     * figure out OTA programming
     * decide between LUA / C
   - [ ] Setup I2C connection to camera module
@@ -31,7 +31,18 @@ retaining the original remote's functionality.
   - [ ] Retrieve images
   - [ ] Setup camera parameters
 
+### Lessons Learned:
 
+* analogWrite(127) is too small to make reverse work right.
+* analogWrite(512) makes reverse work ok, and noticably different from 3.3 raw
+* aW(512) makes wheels turn a bit, but not halfway, and they whine funny.
+
+### Control Wiring
+
+yellow: left
+green: right
+blue: back
+purple: forward
 
 [remote control truck]: https://www.amazon.com/gp/product/B00Y53XH9O
 [microcontroller]: https://www.amazon.com/gp/product/B010O1G1ES

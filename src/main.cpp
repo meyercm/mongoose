@@ -8,8 +8,10 @@ WiFiServer server(8022);
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(D0, OUTPUT);
   pinMode(D1, OUTPUT);
-  analogWrite(D1, 127);
+  pinMode(D2, OUTPUT);
+  pinMode(D3, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
   Serial.begin(115200);
   delay(100);
@@ -48,6 +50,23 @@ void loop(){
         client.println(line);
         if (line.length() == 5 && line[0] == 'q') {
           break;
+        } else if (line[0] == 'f') {
+          digitalWrite(D3, 1);
+          delay(300);
+          digitalWrite(D3, 0);
+        } else if (line[0] == 'b') {
+          digitalWrite(D2, 1);
+          delay(300);
+          digitalWrite(D2, 0);
+        } else if (line[0] == 'l') {
+          digitalWrite(D1, 0);
+          digitalWrite(D0, 1);
+        } else if (line[0] == 'r') {
+          digitalWrite(D0, 0);
+          digitalWrite(D1, 1);
+        } else if (line[0] == 's') {
+          digitalWrite(D0, 0);
+          digitalWrite(D1, 0);
         }
       }
     }
