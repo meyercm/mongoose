@@ -24,8 +24,6 @@ module Mongoose
       RPi::GPIO.setup @headlights_pin_num, :as => :output, :initialize => :low
       @forward_pwm = RPi::GPIO::PWM.new(@forward_pin_num, PWM_FREQ)
       @back_pwm = RPi::GPIO::PWM.new(@back_pin_num, PWM_FREQ)
-      @left_pwm = RPi::GPIO::PWM.new(@left_pin_num, PWM_FREQ)
-      @right_pwm = RPi::GPIO::PWM.new(@right_pin_num, PWM_FREQ)
     end
 
     def on_control_change(controls)
@@ -43,14 +41,14 @@ module Mongoose
       # steering
       case controls.direction
       when :left
-        off(@right_pwm)
-        on(@left_pwm)
+        RPi::GPIO.set_low(@right_pin_num)
+        RPi::GPIO.set_high(@left_pin_num)
       when :right
-        off(@left_pwm)
-        on(@right_pwm)
+        RPi::GPIO.set_low(@left_pin_num)
+        RPi::GPIO.set_high(@right_pin_num)
       else
-        off(@left_pwm)
-        off(@right_pwm)
+        RPi::GPIO.set_low(@left_pin_num)
+        RPi::GPIO.set_low(@right_pin_num)
       end
 
       # headlights and other peripherals
@@ -68,7 +66,7 @@ module Mongoose
     # adjustments for the fact that their micro runs at 3.3, and we run at 5.0
     # so fake it by dividing the duty cycle further
     TARGET_VOLTAGE = 3.3
-    SOURCE_VOLTAGE = 5.0
+    SOURCE_VOLTAGE = 3.3
     FULL_RATE = TARGET_VOLTAGE / SOURCE_VOLTAGE
 
     def off(pin)
