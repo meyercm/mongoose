@@ -11,6 +11,7 @@ module Mongoose
       @left_pin_num = left
       @right_pin_num = right
       @headlights_pin_num = headlights
+      @power = 0
       setup_pins
     end
 
@@ -33,11 +34,11 @@ module Mongoose
       if controls.direction == :forward then
         set_power(@forward_pwm, controls.power)
         @back_pwm.stop if @back_pwm.running?
-        @forward_pwm.start if !@forward_pwm.running?
+        @forward_pwm.start(@power) if !@forward_pwm.running?
       else
         set_power(@back_pwm, controls.power)
         @forward_pwm.stop if @forward_pwm.running?
-        @back_pwm.start if !@back_pwm.running?
+        @back_pwm.start(@power) if !@back_pwm.running?
       end
 
       # steering
@@ -79,7 +80,8 @@ module Mongoose
       pin.start
     end
     def set_power(pin, power)
-      pin.duty_cycle = FULL_RATE * power
+      @power = FULL_RATE * power
+      pin.duty_cycle = @power
     end
   end # class
 end # module
