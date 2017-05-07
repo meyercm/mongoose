@@ -23,45 +23,63 @@ module Mongoose
       RPi::GPIO.setup @headlights_pin_num, :as => :output, :initialize => :low
       @forward_pwm = RPi::GPIO::PWM.new(@forward_pin_num, PWM_FREQ)
       @back_pwm = RPi::GPIO::PWM.new(@back_pin_num, PWM_FREQ)
+      @left_pwm = RPi::GPIO::PWM.new(@left_pin_num, PWM_FREQ)
+      @right_pwm = RPi::GPIO::PWM.new(@right_pin_num, PWM_FREQ)
+      @headlights_pwm = RPi::GPIO::PWM.new(@headlights_pin_num, PWM_FREQ)
     end
 
     def on_control_change(controls)
       # forward / reverse and speed
       if controls.direction == :forward then
-        @forward_pwm.duty_cycle controls.power
-        if @back_pwm.running? then
-          @back_pwm.stop
-          @forward_pwm.start
-        end
+        set_power(@forward_pwm.duty_cycle, controls.power)
+        @back_pwm.stop if @back_pwm.running?
+        @forward_pwm.start if !@forward_pwm.running?
       else
-        @back_pwm.duty_cycle controls.power
-        if @forward_pwm.running? then
-          @forward_pwm.stop
-          @back_pwm.start
-        end
+        set_power(@back_pwm, controls.power)
+        @forward_pwm.stop if @forward_pwm.running?
+        @back_pwm.start if !@back_pwm.running?
       end
 
       # steering
       case controls.direction
       when :left
-        Rpi::GPIO.set_low(@right_pin_num)
-        Rpi::GPIO.set_high(@left_pin_num)
+        off(@right_pwm)
+        on(@left_pwm)
       when :right
-        Rpi::GPIO.set_low(@left_pin_num)
-        Rpi::GPIO.set_high(@right_pin_num)
+        off(@left_pwm)
+        on(@right_pwm)
       else
-        Rpi::GPIO.set_low(@left_pin_num)
-        Rpi::GPIO.set_low(@right_pin_num)
+        off(@left_pwm)
+        off(@right_pwm)
       end
 
       # headlights and other peripherals
       if controls.headlights_on then
-        Rpi::GPIO.set_high(@headlights_pin_num)
+        on(@headlights_pwm)
       else
-        Rpi::GPIO.set_low(@headlights_pin_num)
+        off(@headlights_pwm)
       end
 
       return !controls.quit
     end # on_control_change/1
+
+
+
+    # adjustments for the fact that their micro runs at 3.3, and we run at 5.0
+    # so fake it by dividing the duty cycle further
+    TARGET_VOLTAGE = 3.3
+    SOURCE_VOLTAGE = 5.0
+    FULL_RATE = TARGET_VOLTAGE / SOURCE_VOLTAGE
+
+    def off(pin)
+      pin.stop
+    end
+    def on(pin)
+      pin.duty_cycle = FULL_RATE
+      pin.start
+    end
+    def set_power(pin, power)
+      pin.duty_cycle = FULL_RATE * power
+    end
   end # class
 end # module
