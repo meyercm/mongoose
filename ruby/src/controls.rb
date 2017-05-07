@@ -11,7 +11,7 @@ module Mongoose
       @steering = :straight
       @headlights_on = false
       @quit = false
-      subscriber.on_controls(self)
+      subscriber.on_control_change(self)
     end
 
     def on_key_event(char)
@@ -33,7 +33,7 @@ module Mongoose
       when '0'
         @power = 100.0
       end
-      return subscriber.on_controls(self)
+      return subscriber.on_control_change(self)
     end
   end
 end
