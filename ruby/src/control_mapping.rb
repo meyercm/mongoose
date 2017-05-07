@@ -39,7 +39,7 @@ module Mongoose
       end
 
       # steering
-      case controls.direction
+      case controls.steering
       when :left
         RPi::GPIO.set_low(@right_pin_num)
         RPi::GPIO.set_high(@left_pin_num)
