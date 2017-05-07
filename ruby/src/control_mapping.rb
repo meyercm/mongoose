@@ -16,13 +16,13 @@ module Mongoose
 
     def setup_pins
       RPi::GPIO.set_numbering :board
-      RPi::GPIO.setup forward_pin_num, :as => :output, :initialize => :low
-      RPi::GPIO.setup back_pin_num, :as => :output, :initialize => :low
-      RPi::GPIO.setup left_pin_num, :as => :output, :initialize => :low
-      RPi::GPIO.setup right_pin_num, :as => :output, :initialize => :low
-      RPi::GPIO.setup headlights_pin_num, :as => :output, :initialize => :low
-      @forward_pwm = RPi::GPIO::PWM.new(forward_pin_num, PWM_FREQ)
-      @back_pwm = RPi::GPIO::PWM.new(back_pin_num, PWM_FREQ)
+      RPi::GPIO.setup @forward_pin_num, :as => :output, :initialize => :low
+      RPi::GPIO.setup @back_pin_num, :as => :output, :initialize => :low
+      RPi::GPIO.setup @left_pin_num, :as => :output, :initialize => :low
+      RPi::GPIO.setup @right_pin_num, :as => :output, :initialize => :low
+      RPi::GPIO.setup @headlights_pin_num, :as => :output, :initialize => :low
+      @forward_pwm = RPi::GPIO::PWM.new(@forward_pin_num, PWM_FREQ)
+      @back_pwm = RPi::GPIO::PWM.new(@back_pin_num, PWM_FREQ)
     end
 
     def on_control_change(controls)
