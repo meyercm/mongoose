@@ -77,7 +77,7 @@ module Mongoose
     end
     def on(pin)
       pin.duty_cycle = FULL_RATE
-      pin.start
+      pin.start FULL_RATE
     end
     def set_power(pin, power)
       @power = FULL_RATE * power
