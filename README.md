@@ -44,6 +44,16 @@ green: right
 blue: back
 purple: forward
 
+### NOTES FROM PI:
+
+start saving pictures from picam:
+`raspistill --nopreview -w 1280 -h 720 -q 35 -bm  -o /tmp/stream/pic.jpg -tl 500 -t 9999999 -th 0:0:0 -md 1`
+
+start mjpg_streamer:
+`LD_LIBRARY_PATH=/usr/local/lib mjpg_streamer -i "input_file.so -f /tmp/stream -n pic.jpg" -o "output_http.so -w /usr/local/www"`
+
+
+
 [remote control truck]: https://www.amazon.com/gp/product/B00Y53XH9O
 [microcontroller]: https://www.amazon.com/gp/product/B010O1G1ES
 [camera module]: https://www.amazon.com/Arducam-Megapixels-OV7670-640x480-Compatiable/dp/B013JRXG24
