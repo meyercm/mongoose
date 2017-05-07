@@ -31,7 +31,7 @@ module Mongoose
     def on_control_change(controls)
       # forward / reverse and speed
       if controls.direction == :forward then
-        set_power(@forward_pwm.duty_cycle, controls.power)
+        set_power(@forward_pwm, controls.power)
         @back_pwm.stop if @back_pwm.running?
         @forward_pwm.start if !@forward_pwm.running?
       else
