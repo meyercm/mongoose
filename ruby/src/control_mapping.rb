@@ -26,7 +26,6 @@ module Mongoose
       @back_pwm = RPi::GPIO::PWM.new(@back_pin_num, PWM_FREQ)
       @left_pwm = RPi::GPIO::PWM.new(@left_pin_num, PWM_FREQ)
       @right_pwm = RPi::GPIO::PWM.new(@right_pin_num, PWM_FREQ)
-      @headlights_pwm = RPi::GPIO::PWM.new(@headlights_pin_num, PWM_FREQ)
     end
 
     def on_control_change(controls)
@@ -56,9 +55,9 @@ module Mongoose
 
       # headlights and other peripherals
       if controls.headlights_on then
-        on(@headlights_pwm)
+        RPi::GPIO.set_high(@headlights_pin_num)
       else
-        off(@headlights_pwm)
+        RPi::GPIO.set_low(@headlights_pin_num)
       end
 
       return !controls.quit
