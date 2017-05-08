@@ -1,6 +1,8 @@
 require 'io/console'
 
-# responsibilities:  capture keystrokes, send them onward
+# responsibilities:
+# - capture keystrokes
+# - advertise keystrokes
 
 module Mongoose
   class Keyboard
@@ -19,6 +21,10 @@ module Mongoose
       @running = true
       while (@running) do
         char = STDIN.getch
+
+        # Arrow keys look like ["\e", "[", <ABCD>]
+        # if conditions below are a small state machine to track their arrival
+        # (and to distinguish from "[" and "A" ...)
         if (@escape_seq == 0 and char == "\e") then
           @escape_seq = 1
           next
@@ -37,11 +43,15 @@ module Mongoose
         end
 
         @escape_seq = 0
+        # only way out of our loop is on the subscriber's command
         @running = @subscriber.on_key_event(char)
       end
     end
 
+    # included testing subscriber, prints chars to the screen.
+    # quits on keystroke 'q'
     class EchoSubscriber
+      # char can be a char, or (:up | :down | :left | :right)
       def key_event(char)
         p char.inspect
         return false if char == 'q'

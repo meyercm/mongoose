@@ -1,7 +1,9 @@
-# responsibilities: interpret keystrokes, advertise control status
+# responsibilities:
+# - transform keystrokes into intentions
+# - advertise intentions to subscriber
 
 module Mongoose
-  class Controls
+  class Intentions
     attr_accessor :direction, :power, :steering, :headlights_on, :quit
 
     def initialize(subscriber)
@@ -11,6 +13,7 @@ module Mongoose
       @steering = :straight
       @headlights_on = false
       @quit = false
+      # initial call to the subscriber to let ^ be the initial intentions
       @subscriber.on_control_change(self)
     end
 
@@ -35,14 +38,19 @@ module Mongoose
         warn "quitting"
         @quit = true
       when '1'..'9'
-        @power = (char.to_i - 1) * 10.0
+        # TODO: better formula please... the top end of the range is the dynamic
+        # part.
+        @power = (char.to_i - 1) * 10.0 # 0 - 80.0
         warn "power = #{@power}"
       when '0'
         warn 'full power'
         @power = 100.0
       else
+        # early out if we have nothing to advertise
         warn "ignored input #{char}"
+        return
       end
+
       return @subscriber.on_control_change(self)
     end
   end

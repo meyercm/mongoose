@@ -1,3 +1,7 @@
+# responsibilities:
+# - convert intentions into GPIO pin changes
+# - is the decider for quitting the loop
+
 require 'rpi_gpio'
 
 module Mongoose
@@ -63,8 +67,10 @@ module Mongoose
 
 
 
-    # adjustments for the fact that their micro runs at 3.3, and we run at 5.0
-    # so fake it by dividing the duty cycle further
+    # adjustments for the fact that their micro runs at 3.3, and we (thought) we
+    # run at 5.0 so fake it by dividing the duty cycle further. Lesson learned:
+    # RPi GPIO is 3.3, so this was a waste of time. Leaving in place because it
+    # works
     TARGET_VOLTAGE = 3.3
     SOURCE_VOLTAGE = 3.3
     FULL_RATE = TARGET_VOLTAGE / SOURCE_VOLTAGE
